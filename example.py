@@ -107,14 +107,14 @@ def main(_):
             tf.summary.scalar("cost", cross_entropy)
             tf.summary.scalar("accuracy", accuracy)
 
-            # merge all summaries into a single "operation" which we can execute in a session
+            # merge all summaries into a single "operation"
+            # which we can execute in a session
             summary_op = tf.summary.merge_all()
             init_op = tf.global_variables_initializer()
             print("Variables initialized ...")
 
         sv = tf.train.Supervisor(is_chief=(FLAGS.task_index == 0),
-                                                            global_step=global_step,
-                                                            init_op=init_op)
+                                 global_step=global_step, init_op=init_op)
 
         begin_time = time.time()
         frequency = 100
@@ -141,23 +141,25 @@ def main(_):
 
                     # perform the operations we defined earlier on batch
                     _, cost, summary, step = sess.run(
-                                                    [train_op, cross_entropy, summary_op, global_step],
-                                                    feed_dict={x: batch_x, y_: batch_y})
+                            [train_op, cross_entropy, summary_op, global_step],
+                            feed_dict={x: batch_x, y_: batch_y})
                     writer.add_summary(summary, step)
 
                     count += 1
                     if count % frequency == 0 or i+1 == batch_count:
                         elapsed_time = time.time() - start_time
+                        average_time = float(elapsed_time*1000/frequency)
                         start_time = time.time()
                         print("Step: %d," % (step+1),
-                                    " Epoch: %2d," % (epoch+1),
-                                    " Batch: %3d of %3d," % (i+1, batch_count),
-                                    " Cost: %.4f," % cost,
-                                    " AvgTime: %3.2fms" % float(elapsed_time*1000/frequency))
+                              " Epoch: %2d," % (epoch+1),
+                              " Batch: %3d of %3d," % (i+1, batch_count),
+                              " Cost: %.4f," % cost,
+                              " AvgTime: %3.2fms" % average_time)
                         count = 0
 
 
-            print("Test-Accuracy: %2.2f" % sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels}))
+            print("Test-Accuracy: %2.2f" % sess.run(accuracy,
+                feed_dict={x: mnist.test.images, y_: mnist.test.labels}))
             print("Total Time: %3.2fs" % float(time.time() - begin_time))
             print("Final Cost: %.4f" % cost)
 

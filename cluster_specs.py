@@ -1,7 +1,7 @@
 from more_itertools import unique_everseen
 import argparse
 
-FLAGS=None
+FLAGS = None
 
 
 def main():
@@ -12,9 +12,10 @@ def main():
     f.close()
     hosts_list = list(unique_everseen(hosts_list))
 
-    # all hosts other than ps are all treated as workers, .ten.osc.edu is for owens, for other clusters, you may change correspondingly
-    ps_hosts = [hosts_list[i] + ".ten.osc.edu:2222" for i in range(FLAGS.num_ps_hosts)]
-    worker_hosts = [hosts_list[i] + ".ten.osc.edu:2222" for i in range(len(ps_hosts), len(hosts_list))]
+    # All hosts other than ps are all treated as workers,
+    ps_hosts = [hosts_list[i] + ":2222" for i in range(FLAGS.num_ps_hosts)]
+    worker_hosts = [hosts_list[i] + ":2222" for i in range(len(ps_hosts),
+                    len(hosts_list))]
 
     print(','.join(ps_hosts), ','.join(worker_hosts))
 
