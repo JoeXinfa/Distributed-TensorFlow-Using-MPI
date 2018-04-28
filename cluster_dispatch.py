@@ -11,40 +11,40 @@ def main():
     rank = comm.Get_rank()
 
     # Testing
-    # hostname = socket.gethostname()
-    # print("rank, hostname =", rank, hostname)
+    hostname = socket.gethostname()
+    print("rank, hostname =", rank, hostname)
 
-    ps_hosts_list = FLAGS.ps_hosts.split(',')
-    worker_hosts_list = FLAGS.worker_hosts.split(',')
-    num_ps_hosts = len(ps_hosts_list)
-    num_worker_hosts = len(worker_hosts_list)
-    num_hosts = num_ps_hosts + num_worker_hosts
+    # ps_hosts_list = FLAGS.ps_hosts.split(',')
+    # worker_hosts_list = FLAGS.worker_hosts.split(',')
+    # num_ps_hosts = len(ps_hosts_list)
+    # num_worker_hosts = len(worker_hosts_list)
+    # num_hosts = num_ps_hosts + num_worker_hosts
 
-    if rank == 0:
-        print("ps_hosts_list =", ps_hosts_list)
-        print("worker_hosts_list =", worker_hosts_list)
+    # if rank == 0:
+    #     print("ps_hosts_list =", ps_hosts_list)
+    #     print("worker_hosts_list =", worker_hosts_list)
 
-    for rank_rotate in range(num_hosts):
-        if rank == rank_rotate:
-            print("I am rank " + str(rank_rotate) + "...")
-            hostname = socket.gethostname()
-            print("My hostname is: " + hostname)
-            for ps_hosts_rotate in range(num_ps_hosts):
-                if hostname in ps_hosts_list[ps_hosts_rotate].split(':')[0]:
-                    print("My job ID is: ps" + str(ps_hosts_rotate))
-                    os.system(PYTHON + " -u " + FLAGS.script +
-                              " --ps_hosts=" + FLAGS.ps_hosts +
-                              " --worker_hosts=" + FLAGS.worker_hosts +
-                              " --job_name=ps" +
-                              " --task_index=" + str(ps_hosts_rotate))
-            for worker_hosts_rotate in range(num_worker_hosts):
-                if hostname in worker_hosts_list[worker_hosts_rotate].split(':')[0]:
-                    print("My job ID is: worker" + str(worker_hosts_rotate))
-                    os.system(PYTHON + " -u " + FLAGS.script +
-                              " --ps_hosts=" + FLAGS.ps_hosts +
-                              " --worker_hosts=" + FLAGS.worker_hosts +
-                              " --job_name=worker" +
-                              " --task_index=" + str(worker_hosts_rotate))
+    # for rank_rotate in range(num_hosts):
+    #     if rank == rank_rotate:
+    #         print("I am rank " + str(rank_rotate) + "...")
+    #         hostname = socket.gethostname()
+    #         print("My hostname is: " + hostname)
+    #         for ps_hosts_rotate in range(num_ps_hosts):
+    #             if hostname in ps_hosts_list[ps_hosts_rotate].split(':')[0]:
+    #                 print("My job ID is: ps" + str(ps_hosts_rotate))
+    #                 os.system(PYTHON + " -u " + FLAGS.script +
+    #                           " --ps_hosts=" + FLAGS.ps_hosts +
+    #                           " --worker_hosts=" + FLAGS.worker_hosts +
+    #                           " --job_name=ps" +
+    #                           " --task_index=" + str(ps_hosts_rotate))
+    #         for worker_hosts_rotate in range(num_worker_hosts):
+    #             if hostname in worker_hosts_list[worker_hosts_rotate].split(':')[0]:
+    #                 print("My job ID is: worker" + str(worker_hosts_rotate))
+    #                 os.system(PYTHON + " -u " + FLAGS.script +
+    #                           " --ps_hosts=" + FLAGS.ps_hosts +
+    #                           " --worker_hosts=" + FLAGS.worker_hosts +
+    #                           " --job_name=worker" +
+    #                           " --task_index=" + str(worker_hosts_rotate))
 
 
 if __name__ == "__main__":
