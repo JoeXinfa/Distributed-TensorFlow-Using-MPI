@@ -6,7 +6,7 @@ import time
 FLAGS = None
 
 def main(_):
-    
+
     ps_hosts = FLAGS.ps_hosts.split(',')
     worker_hosts = FLAGS.worker_hosts.split(',')
 
@@ -86,13 +86,13 @@ def main(_):
                 rep_op = tf.train.SyncReplicasOptimizer(
                     grad_op,
                     replicas_to_aggregate=len(workers),
-                    replica_id=FLAGS.task_index, 
+                    replica_id=FLAGS.task_index,
                     total_num_replicas=len(workers),
                     use_locking=True)
                 train_op = rep_op.minimize(cross_entropy, global_step=global_step)
                 '''
                 train_op = grad_op.minimize(cross_entropy, global_step=global_step)
-                
+
             '''
             init_token_op = rep_op.get_init_tokens_op()
             chief_queue_runner = rep_op.get_chief_queue_runner()
@@ -107,7 +107,7 @@ def main(_):
             tf.summary.scalar("cost", cross_entropy)
             tf.summary.scalar("accuracy", accuracy)
 
-            # merge all summaries into a single "operation" which we can execute in a session 
+            # merge all summaries into a single "operation" which we can execute in a session
             summary_op = tf.summary.merge_all()
             init_op = tf.global_variables_initializer()
             print("Variables initialized ...")
@@ -127,7 +127,7 @@ def main(_):
             '''
             # create log writer object (this will log on every machine)
             writer = tf.summary.FileWriter(logs_path, graph=tf.get_default_graph())
-                    
+
             # perform training cycles
             start_time = time.time()
             for epoch in range(training_epochs):
@@ -138,10 +138,10 @@ def main(_):
                 count = 0
                 for i in range(batch_count):
                     batch_x, batch_y = mnist.train.next_batch(batch_size)
-                    
+
                     # perform the operations we defined earlier on batch
                     _, cost, summary, step = sess.run(
-                                                    [train_op, cross_entropy, summary_op, global_step], 
+                                                    [train_op, cross_entropy, summary_op, global_step],
                                                     feed_dict={x: batch_x, y_: batch_y})
                     writer.add_summary(summary, step)
 
@@ -149,10 +149,10 @@ def main(_):
                     if count % frequency == 0 or i+1 == batch_count:
                         elapsed_time = time.time() - start_time
                         start_time = time.time()
-                        print("Step: %d," % (step+1), 
-                                    " Epoch: %2d," % (epoch+1), 
-                                    " Batch: %3d of %3d," % (i+1, batch_count), 
-                                    " Cost: %.4f," % cost, 
+                        print("Step: %d," % (step+1),
+                                    " Epoch: %2d," % (epoch+1),
+                                    " Batch: %3d of %3d," % (i+1, batch_count),
+                                    " Cost: %.4f," % cost,
                                     " AvgTime: %3.2fms" % float(elapsed_time*1000/frequency))
                         count = 0
 
